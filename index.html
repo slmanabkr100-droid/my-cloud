@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساحتي - التخزين السحابي الخاص</title>
+<style>
+:root{
+  --bg:#f6f8f9;--card:#fff;--text:#17202a;--muted:#75808a;--green:#16a66a;
+  --green2:#0b8f59;--line:#e6eaed;--danger:#d94b4b;--shadow:0 8px 24px rgba(20,40,50,.07)
+}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,"Noto Sans Arabic",sans-serif;background:var(--bg);color:var(--text)}
+button,input{font:inherit} button{cursor:pointer;border:0}
+.app{max-width:1050px;margin:auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 18px}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:48px;height:48px;border-radius:15px;background:#e4f7ef;color:var(--green);display:grid;place-items:center;font-size:25px}
+.brand h1{margin:0;font-size:23px}.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.icon-btn{width:44px;height:44px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);font-size:20px}
+.search{display:flex;gap:8px;background:var(--card);padding:8px;border:1px solid var(--line);border-radius:17px;margin-bottom:16px}
+.search input{flex:1;border:0;outline:0;padding:11px;background:transparent;color:var(--text)}
+.search span{padding:10px;color:var(--muted)}
+.storage{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);display:flex;gap:20px;align-items:center}
+.ring{width:108px;height:108px;border-radius:50%;background:conic-gradient(var(--green) 0 45%,#e9edef 45%);display:grid;place-items:center;flex:none}
+.ring div{width:78px;height:78px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center;font-weight:bold;font-size:20px}.ring small{display:block;font-size:11px;color:var(--muted);font-weight:normal}
+.storage-info{flex:1}.storage-info h2{margin:0 0 8px;font-size:18px}.storage-info strong{color:var(--green);font-size:22px}.bar{height:10px;background:#e8ecee;border-radius:10px;overflow:hidden;margin:12px 0}.bar i{display:block;width:45%;height:100%;background:var(--green);border-radius:10px}.muted{color:var(--muted);font-size:14px}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.action{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 10px;text-align:center;box-shadow:var(--shadow)}.action .ico{font-size:28px}.action b{display:block;margin-top:8px}.upload{color:#1876c9}.folder{color:#db8a00}.trash{color:#4f52c9}.files{color:var(--green)}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:24px 2px 12px}.section-head h2{font-size:20px;margin:0}.link{color:var(--green);background:transparent}
+.categories{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.cat{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px 8px;text-align:center}.cat .ico{font-size:27px}.cat b{display:block;margin:7px 0 4px}.cat small{color:var(--muted)}
+.recent{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}.file-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}.file-row:last-child{border-bottom:0}.thumb{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:#eef2f3;font-weight:bold}.pdf{background:#ffe8e8;color:#d84a4a}.xls{background:#e2f6e9;color:#15965b}.img{background:#e7f0ff;color:#2978d0}.file-main{flex:1;min-width:0}.file-main b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.file-main small{color:var(--muted)}.more{background:transparent;font-size:21px}
+nav{position:sticky;bottom:10px;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:20px;display:grid;grid-template-columns:repeat(5,1fr);padding:8px;margin-top:18px;box-shadow:var(--shadow)}nav button{background:transparent;color:#6e777e;padding:8px 2px}nav button.active{color:var(--green);font-weight:bold}nav span{display:block;font-size:20px;margin-bottom:3px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:flex-end;justify-content:center;padding:14px;z-index:5}.modal.show{display:flex}.sheet{width:min(520px,100%);background:var(--card);border-radius:22px;padding:20px}.sheet h3{margin-top:0}.sheet input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;outline:0}.primary{width:100%;padding:13px;border-radius:13px;background:var(--green);color:white;margin-top:12px}.secondary{width:100%;padding:12px;border-radius:13px;background:#eef1f2;margin-top:8px}
+.empty{padding:28px;text-align:center;color:var(--muted);display:none}
+@media(max-width:700px){.storage{align-items:flex-start}.actions{grid-template-columns:repeat(2,1fr)}.categories{grid-template-columns:repeat(2,1fr)}.cat:last-child{grid-column:span 2}.brand h1{font-size:20px}}
+</style>
+<style>
+#loginScreen{position:fixed;inset:0;background:linear-gradient(145deg,#f5fbf8,#eef5f2);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.login-card{width:min(430px,100%);background:#fff;border:1px solid #e4ebe8;border-radius:24px;padding:28px;box-shadow:0 18px 50px rgba(20,60,45,.12);text-align:right}
+.login-logo{width:68px;height:68px;border-radius:20px;background:#e4f7ef;color:#16a66a;display:grid;place-items:center;font-size:34px;margin:0 0 16px}
+.login-card h1{margin:0 0 7px;font-size:25px}.login-card p{color:#75808a;margin:0 0 22px}
+.login-card label{display:block;margin:13px 0 7px;font-weight:bold}.login-card input{width:100%;padding:14px;border:1px solid #dfe6e3;border-radius:13px;outline:none}
+.login-btn{width:100%;padding:14px;border-radius:13px;background:#16a66a;color:#fff;margin-top:18px;font-weight:bold}
+.login-note{font-size:12px!important;color:#899398!important;text-align:center;margin-top:14px!important}
+.logout-btn{background:#fff;border:1px solid #e6eaed;border-radius:12px;padding:9px 12px;color:#d94b4b}
+</style></head>
+<body><div id="loginScreen">
+<div class="login-card">
+<div class="login-logo">☁</div>
+<h1>تسجيل الدخول</h1>
+<p>ادخل إلى مساحة التخزين السحابية الخاصة بك.</p>
+<label for="loginEmail">البريد الإلكتروني</label>
+<input id="loginEmail" type="email" placeholder="example@email.com">
+<label for="loginPassword">كلمة المرور</label>
+<input id="loginPassword" type="password" placeholder="••••••••">
+<button class="login-btn" onclick="login()">دخول إلى مساحتي</button>
+<p class="login-note">نسخة تجريبية: تسجيل الدخول محفوظ على هذا الهاتف فقط، وليس نظام حسابات سحابيًا حقيقيًا بعد.</p>
+</div></div>
+<div class="app">
+<header>
+  <button class="icon-btn" onclick="toggleDark()" aria-label="الوضع الليلي">☾</button>
+  <div class="brand"><div class="logo">☁</div><div><h1>مساحتي</h1><p>تخزينك السحابي الخاص</p></div></div>
+  <button class="logout-btn" onclick="logout()">خروج</button>
+</header>
+
+<div class="search"><span>⌕</span><input id="search" placeholder="ابحث عن ملف أو مجلد..." oninput="filterFiles()"></div>
+
+<section class="storage">
+  <div class="ring"><div>45%<small>مستخدم</small></div></div>
+  <div class="storage-info">
+    <h2>المساحة المستخدمة</h2>
+    <div><strong>4.5 جيجابايت</strong> من 10 جيجابايت</div>
+    <div class="bar"><i></i></div>
+    <div class="muted">المساحة المتبقية: 5.5 جيجابايت</div>
+  </div>
+</section>
+
+<div class="actions">
+  <button class="action files" onclick="alert('تم فتح قسم ملفاتي')"><div class="ico">📁</div><b>ملفاتي</b></button>
+  <button class="action upload" onclick="document.getElementById('fileInput').click()"><div class="ico">☁️</div><b>رفع ملف</b></button>
+  <button class="action folder" onclick="newFolder()"><div class="ico">📂</div><b>مجلد جديد</b></button>
+  <button class="action trash" onclick="alert('سلة المحذوفات فارغة في النسخة التجريبية')"><div class="ico">🗑️</div><b>سلة المحذوفات</b></button>
+</div>
+<input id="fileInput" type="file" multiple hidden onchange="handleFiles(this.files)">
+
+<div class="section-head"><h2>الفئات</h2><button class="link">عرض الكل ←</button></div>
+<div class="categories">
+  <div class="cat"><div class="ico">🗑️</div><b>المحذوفات</b><small>9 ملفات</small></div>
+  <div class="cat"><div class="ico">🎵</div><b>الصوتيات</b><small>18 ملف</small></div>
+  <div class="cat"><div class="ico">📄</div><b>المستندات</b><small>64 ملف</small></div>
+  <div class="cat"><div class="ico">🎬</div><b>الفيديوهات</b><small>32 ملف</small></div>
+  <div class="cat"><div class="ico">🖼️</div><b>الصور</b><small>128 ملف</small></div>
+</div>
+
+<div class="section-head"><h2>الملفات الأخيرة ⏱</h2><button class="link">عرض الكل ←</button></div>
+<div class="recent" id="fileList">
+  <div class="file-row"><div class="thumb pdf">PDF</div><div class="file-main"><b>مشروع العمل.pdf</b><small>اليوم - 10:30 ص · 2.4 ميجابايت</small></div><button class="more">⋮</button></div>
+  <div class="file-row"><div class="thumb img">🏔️</div><div class="file-main"><b>رحلة العطلة.mp4</b><small>أمس - 08:15 م · 1.8 جيجابايت</small></div><button class="more">⋮</button></div>
+  <div class="file-row"><div class="thumb xls">X</div><div class="file-main"><b>تقرير شهري.xlsx</b><small>2024/05/18 - 11:20 · 3.2 ميجابايت</small></div><button class="more">⋮</button></div>
+  <div class="file-row"><div class="thumb img">🏞️</div><div class="file-main"><b>الصورة_001.jpg</b><small>2024/05/17 - 09:45 · 45 ميجابايت</small></div><button class="more">⋮</button></div>
+</div>
+<div class="empty" id="empty">لا توجد ملفات مطابقة للبحث.</div>
+
+<nav>
+  <button class="active"><span>⌂</span>الرئيسية</button>
+  <button><span>□</span>ملفاتي</button>
+  <button onclick="document.getElementById('fileInput').click()"><span>☁</span>رفع ملف</button>
+  <button><span>☆</span>المفضلة</button>
+  <button onclick="alert('الإعدادات ستتوفر في النسخة القادمة')"><span>⚙</span>الإعدادات</button>
+</nav>
+</div>
+
+<div class="modal" id="modal">
+  <div class="sheet">
+    <h3>إنشاء مجلد جديد</h3>
+    <input id="folderName" placeholder="اسم المجلد">
+    <button class="primary" onclick="createFolder()">إنشاء المجلد</button>
+    <button class="secondary" onclick="closeModal()">إلغاء</button>
+  </div>
+</div>
+
+<script>
+const originalRows = [...document.querySelectorAll('.file-row')];
+function filterFiles(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  let count=0;
+  originalRows.forEach(r=>{const ok=r.innerText.toLowerCase().includes(q);r.style.display=ok?'flex':'none';if(ok)count++;});
+  document.getElementById('empty').style.display=count?'none':'block';
+}
+function newFolder(){document.getElementById('modal').classList.add('show');setTimeout(()=>document.getElementById('folderName').focus(),100)}
+function closeModal(){document.getElementById('modal').classList.remove('show');document.getElementById('folderName').value=''}
+function createFolder(){
+  const name=document.getElementById('folderName').value.trim();
+  if(!name){alert('اكتب اسم المجلد أولاً');return}
+  const row=document.createElement('div');row.className='file-row';
+  row.innerHTML=`<div class="thumb">📁</div><div class="file-main"><b>${escapeHtml(name)}</b><small>مجلد · تم إنشاؤه الآن</small></div><button class="more">⋮</button>`;
+  document.getElementById('fileList').prepend(row); originalRows.unshift(row); closeModal();
+}
+function handleFiles(files){
+  [...files].forEach(file=>{
+    const row=document.createElement('div');row.className='file-row';
+    let icon='📄', cls='';
+    if(file.type.startsWith('image/')){icon='🖼️';cls='img'} else if(file.type==='application/pdf'){icon='PDF';cls='pdf'} else if(file.type.includes('spreadsheet')||file.name.endsWith('.xlsx')){icon='X';cls='xls'}
+    row.innerHTML=`<div class="thumb ${cls}">${icon}</div><div class="file-main"><b>${escapeHtml(file.name)}</b><small>تم الرفع الآن · ${formatSize(file.size)}</small></div><button class="more">⋮</button>`;
+    document.getElementById('fileList').prepend(row);originalRows.unshift(row);
+  });
+}
+function formatSize(n){if(n<1024*1024)return Math.max(1,Math.round(n/1024))+' كيلوبايت';return (n/1024/1024).toFixed(1)+' ميجابايت'}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function toggleDark(){
+  const dark=document.body.dataset.dark==='1';
+  document.body.dataset.dark=dark?'0':'1';
+  if(!dark){document.documentElement.style.setProperty('--bg','#111718');document.documentElement.style.setProperty('--card','#1a2021');document.documentElement.style.setProperty('--text','#f2f5f5');document.documentElement.style.setProperty('--muted','#aab4b7');document.documentElement.style.setProperty('--line','#2a3335')}
+  else{location.reload()}
+}
+
+function login(){
+ const email=document.getElementById('loginEmail').value.trim();
+ const pass=document.getElementById('loginPassword').value;
+ if(!email||!pass){alert('أدخل البريد الإلكتروني وكلمة المرور.');return}
+ localStorage.setItem('masahati_logged_in','1');
+ document.getElementById('loginScreen').style.display='none';
+}
+function logout(){
+ localStorage.removeItem('masahati_logged_in');
+ document.getElementById('loginScreen').style.display='flex';
+}
+window.addEventListener('DOMContentLoaded',()=>{
+ if(localStorage.getItem('masahati_logged_in')==='1')
+   document.getElementById('loginScreen').style.display='none';
+});
+</script>
+</body>
+</html>
